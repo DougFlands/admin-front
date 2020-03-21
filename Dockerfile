@@ -4,8 +4,9 @@ WORKDIR /usr/src/app
 USER root
 
 COPY . /usr/src/app
-RUN yarn --registry https://registry.npm.taobao.org/ 
-RUN npm run build
+RUN npm config set registry https://registry.npm.taobao.org  \
+  && npm i \
+  && npm run build
 
 
 FROM nginx
