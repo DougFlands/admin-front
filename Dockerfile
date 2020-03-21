@@ -5,7 +5,6 @@ USER root
 
 COPY . /usr/src/app
 RUN yarn --registry https://registry.npm.taobao.org/ 
-RUN yarn --production
 RUN npm run build
 
 
