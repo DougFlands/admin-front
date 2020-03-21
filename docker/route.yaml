@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adminfrontingress
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: HostRegexp(`xx.cn`)
+      kind: Rule
+      services:
+        - name: admin-front
+          kind: Service
+          port: 80
