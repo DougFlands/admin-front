@@ -1,7 +1,11 @@
 export default {
   dev: {
-    '/api': {
-      target: 'http://xx.com',
+    '/api/user': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+    },
+    '/api/file': {
+      target: 'http://localhost:8081',
       changeOrigin: true,
     },
   },
