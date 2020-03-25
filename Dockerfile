@@ -3,10 +3,10 @@ FROM circleci/node:latest-browsers as builder
 WORKDIR /usr/src/app
 USER root
 COPY . /usr/src/app
-
-RUN yarn config set registry https://registry.npm.taobao.org \
-  && yarn \
+RUN npm config set registry https://registry.npm.taobao.org  \
+  && npm i \
   && npm run build
+
 
 FROM nginx
 
