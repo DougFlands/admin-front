@@ -4,21 +4,20 @@ import { getPageQuery } from '@/utils/utils';
 import { router } from 'umi';
 import { setAuthority } from '@/utils/authority';
 import Cookies from 'js-cookie';
-import { message } from 'antd'
+import { message } from 'antd';
 
-
-import { login as apiLogin, registered as apiRegistered, info as apiInfo, } from '@/services/user';
+import { login as apiLogin, registered as apiRegistered, info as apiInfo } from '@/services/user';
 
 export interface UserInfo {
   name?: string;
-  signupAt?: string
+  signupAt?: string;
   // 用户权限等级
-  authType?: string,
+  authType?: string;
 }
 
 export interface UserModelState {
   userInfo?: UserInfo;
-  token?: string
+  token?: string;
 }
 
 export interface UserModelType {
@@ -40,8 +39,8 @@ const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
-    userInfo: JSON.parse(localStorage.getItem('userinfo') || "{}"),
-    token: Cookies.get('token'),
+    userInfo: JSON.parse(localStorage.getItem('userinfo') || '{}'),
+    token: Cookies.get('token') && (sessionStorage.getItem('token') || ''),
   },
 
   effects: {
@@ -52,8 +51,11 @@ const UserModel: UserModelType = {
           type: 'saveLoginInfo',
           payload: response.Data,
         });
-        Cookies.set('token', response.Data.Token)
-        Cookies.set('username', payload.username)
+        Cookies.set('token', response.Data.Token);
+        Cookies.set('username', payload.username);
+        if (payload.autoLogin) {
+          sessionStorage.setItem('token', response.Data.Token);
+        }
 
         yield put({
           type: 'info',
@@ -63,9 +65,9 @@ const UserModel: UserModelType = {
     },
 
     *signup({ payload }, { call }) {
-      const response = yield call(apiRegistered, payload)
+      const response = yield call(apiRegistered, payload);
       if (response?.Code === 0) {
-        message.success('创建成功')
+        message.success('创建成功');
       }
     },
 
@@ -76,13 +78,13 @@ const UserModel: UserModelType = {
           name: response.Data.Username,
           signupAt: response.Data.SignupAt,
           authType: response.Data.AuthType,
-        }
+        };
         yield put({
           type: 'saveUserInfo',
           payload: data,
         });
 
-        localStorage.setItem('userinfo', JSON.stringify(data))
+        localStorage.setItem('userinfo', JSON.stringify(data));
 
         setAuthority(data.authType);
 
@@ -106,19 +108,20 @@ const UserModel: UserModelType = {
     },
 
     *logout(_, { put }) {
-      Cookies.remove('token')
-      Cookies.remove('username')
-      localStorage.removeItem('userinfo')
+      Cookies.remove('token');
+      Cookies.remove('username');
+      sessionStorage.removeItem('token');
+      localStorage.removeItem('userinfo');
       yield put({
         type: 'saveLoginInfo',
         payload: {
-          token: ''
+          token: '',
         },
-      })
+      });
       yield put({
         type: 'saveUserInfo',
         payload: {},
-      })
+      });
     },
   },
 

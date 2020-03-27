@@ -21,21 +21,19 @@ interface ListProps {
   loading?: boolean;
 }
 
-
 class FileList extends Component<ListProps> {
   componentDidMount() {
-    this.onGetListHandler()
+    this.onGetListHandler();
   }
 
   onGetListHandler() {
-    console.log(this.props);
     const { dispatch } = this.props;
     dispatch({
       type: 'fileList/getList',
       payload: {
         limit: 20,
       },
-    })
+    });
   }
 
   render() {
@@ -60,13 +58,11 @@ class FileList extends Component<ListProps> {
                 actions={[
                   <DownloadBtn item={item} />,
                   <RenameBtn item={item} />,
-                  <DeleteBtn item={item} />
+                  <DeleteBtn item={item} />,
                 ]}
               >
                 <p>原文件名: {item.FileName}</p>
-                {
-                  item.FileRename ? <p>修改文件名: {item.FileRename}</p> : null
-                }
+                {item.FileRename ? <p>修改文件名: {item.FileRename}</p> : null}
                 <p>文件大小: {item.FileSize} KB</p>
                 <p>上传日期: {item.UploadAt}</p>
               </Card>
@@ -81,8 +77,7 @@ class FileList extends Component<ListProps> {
 const WrapperFileList = connect(({ fileList, loading }: ConnectState) => ({
   fileList,
   loading: loading.effects['fileList/getList'],
-}))(FileList)
-
+}))(FileList);
 
 export default (): React.ReactNode => (
   <PageHeaderWrapper>
