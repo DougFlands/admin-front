@@ -2,20 +2,17 @@ import {
   DownloadOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
-import '@ant-design/compatible/assets/index.css';
 import { Tooltip } from 'antd';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'dva';
+import { Dispatch, connect } from 'umi';
 import { ListItemDataType } from '../data.d';
 
 interface DownloadBtnProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   submitting?: boolean;
   item: ListItemDataType
 }
-
 
 const DownloadBtn: React.FC<DownloadBtnProps> = props => {
   const {

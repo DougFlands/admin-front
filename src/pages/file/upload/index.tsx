@@ -1,18 +1,17 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import {
   UploadOutlined,
+  InboxOutlined
 } from '@ant-design/icons';
-import '@ant-design/compatible/assets/index.css';
-import { Button, Upload, Icon, message } from 'antd';
+import { Button, Upload, message } from 'antd';
 import React, { Component } from 'react';
 import { ConnectState } from '@/models/connect';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'dva';
+import { Dispatch, connect } from 'umi';
 
 import styles from './style.less';
 
 interface UploadFileProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   submitting?: boolean;
 }
 
@@ -77,7 +76,7 @@ class UploadFile extends Component<UploadFileProps, UploadFileState> {
 
         <Upload.Dragger {...this.draggerProps}>
           <p className="ant-upload-drag-icon">
-            <Icon type="inbox" />
+            <InboxOutlined />
           </p>
           <p className="ant-upload-text">点击或拖曳至此上传文件</p>
         </Upload.Dragger>

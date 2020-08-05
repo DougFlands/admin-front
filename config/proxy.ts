@@ -11,7 +11,7 @@ export default {
   },
   test: {
     '/api': {
-      target: 'http://xx.cn',
+      target: 'https://xx.cn',
       changeOrigin: true,
       bypass: (req: any) => {
         req.headers.referer = 'xx.cn';

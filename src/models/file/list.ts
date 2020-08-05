@@ -1,6 +1,4 @@
-import { Reducer } from 'redux';
-
-import { Effect } from 'dva';
+import { Reducer, Effect } from 'umi';
 import { ListItemDataType } from '@/pages/file/list/data';
 import { 
   getFileList as apiGetFileList, 
@@ -10,7 +8,7 @@ import {
 import {message} from 'antd'
 
 export interface StateType {
-  list: ListItemDataType[];
+  list: ListItemDataType[]
 }
 
 export interface ModelType {
@@ -39,8 +37,9 @@ const Model: ModelType = {
       const response = yield call(apiGetFileList, payload);
       if (response?.Code === 0) {
         response.Data.list.forEach((item: ListItemDataType) => {
-          item.FileSize = Math.round(item.FileSize/1024*100)/100
-        });
+          const FileSize = Math.round(item.FileSize / 1024 * 100) / 100
+          item.FileSize = FileSize
+        })
         yield put({
           type: 'saveList',
           payload: response.Data,

@@ -1,16 +1,14 @@
 import {
   EditOutlined,
 } from '@ant-design/icons';
-import '@ant-design/compatible/assets/index.css';
 import { Modal, Tooltip, Input } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { ConnectState } from '@/models/connect';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'dva';
+import { Dispatch, connect } from 'umi';
 import { ListItemDataType } from '../data.d';
 
 interface RenameBtnProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   submitting?: boolean;
   item: ListItemDataType
 }
@@ -21,12 +19,7 @@ const RenameBtn: React.FC<RenameBtnProps> = props => {
     item,
   } = props;
 
-
-  let renameValue = item.FileName
-
-  const setRenameValue = (value: string) => {
-    renameValue = value
-  }
+  const [renameValue, setRenameValue] = useState(item.FileName);
 
   const handlerRename = () => {
     Modal.confirm({
@@ -45,9 +38,7 @@ const RenameBtn: React.FC<RenameBtnProps> = props => {
           }
         })
       },
-      onCancel: () => {
-        renameValue = item.FileName
-      }
+      onCancel: () => setRenameValue(item.FileName)
     })
   }
 

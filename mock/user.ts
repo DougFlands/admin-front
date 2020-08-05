@@ -18,21 +18,12 @@ export default {
     });
   },
   'POST /api/user/info': (req: Request, res: Response) => {
-    const { username } = req.body;
-    const { token } = req.query;
-    if (username === '123' && token === '123') {
-      res.send(resData(0, '', {
-        name: username,
-        authType: 'admin',
-
-        AuthType: "admin",
-        SignupAt: "2019-12-26 10:36:59",
-        Username: "admin",
-      }));
-      return;
-    }
-
-    res.send(resData());
+    res.send(resData(0, '', {
+      AuthType: 'admin',
+      // AuthType: 'user',
+      SignupAt: "2019-12-26 10:36:59",
+      Username: "admin",
+    }));
   },
   'POST /api/user/signup': (req: Request, res: Response) => {
     res.send(resData(0, '', {}));

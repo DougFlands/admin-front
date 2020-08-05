@@ -12,29 +12,23 @@
 }
 
 .right {
+  display: flex;
   float: right;
-  height: @layout-header-height;
+  height: 48px;
   margin-left: auto;
   overflow: hidden;
   .action {
-    display: inline-block;
-    height: 100%;
+    display: flex;
+    align-items: center;
+    height: 48px;
     padding: 0 12px;
     cursor: pointer;
     transition: all 0.3s;
-    > i {
-      color: @text-color;
-      vertical-align: middle;
-    }
     &:hover {
       background: @pro-header-hover-bg;
     }
     &:global(.opened) {
       background: @pro-header-hover-bg;
-    }
-    .name {
-      margin-left: 10px;
-      vertical-align: middle;
     }
   }
   .search {
@@ -45,7 +39,6 @@
   }
   .account {
     .avatar {
-      margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
       margin-right: 8px;
       color: @primary-color;
       vertical-align: top;
@@ -56,30 +49,11 @@
 
 .dark {
   .action {
-    color: rgba(255, 255, 255, 0.85);
-    > i {
-      color: rgba(255, 255, 255, 0.85);
+    &:hover {
+      background: #252a3d;
     }
-    &:hover,
     &:global(.opened) {
-      background: @primary-color;
-    }
-  }
-}
-
-:global(.ant-pro-global-header) {
-  .dark {
-    .action {
-      color: @text-color;
-      > i {
-        color: @text-color;
-      }
-      &:hover {
-        color: rgba(255, 255, 255, 0.85);
-        > i {
-          color: rgba(255, 255, 255, 0.85);
-        }
-      }
+      background: #252a3d;
     }
   }
 }
@@ -99,6 +73,9 @@
       .avatar {
         margin-right: 0;
       }
+    }
+    .search {
+      display: none;
     }
   }
 }

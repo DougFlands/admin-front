@@ -1,16 +1,14 @@
 import {
   DeleteTwoTone,
 } from '@ant-design/icons';
-import '@ant-design/compatible/assets/index.css';
 import { Modal, Tooltip } from 'antd';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'dva';
+import { connect, Dispatch } from 'umi';
 import { ListItemDataType } from '../data.d';
 
 interface DeleteBtnProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   submitting?: boolean;
   item: ListItemDataType
 }

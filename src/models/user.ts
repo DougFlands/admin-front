@@ -1,8 +1,5 @@
-import { Effect } from 'dva';
-import { Reducer } from 'redux';
+import { Effect, Reducer } from 'umi';
 import { getPageQuery } from '@/utils/utils';
-import { router } from 'umi';
-import { setAuthority } from '@/utils/authority';
 import Cookies from 'js-cookie';
 import { message } from 'antd';
 
@@ -35,12 +32,31 @@ export interface UserModelType {
   };
 }
 
+const replaceGoto = () => {
+  const urlParams = new URL(window.location.href);
+  const params = getPageQuery();
+  let { redirect } = params as { redirect: string };
+  if (redirect) {
+    const redirectUrlParams = new URL(redirect);
+    if (redirectUrlParams.origin === urlParams.origin) {
+      redirect = redirect.substr(urlParams.origin.length);
+      if (redirect.match(/^\/.*#/)) {
+        redirect = redirect.substr(redirect.indexOf('#'));
+      }
+    } else {
+      window.location.href = '/';
+      return;
+    }
+  }
+  window.location.href = urlParams.href.split(urlParams.pathname)[0] + (redirect || '/');
+};
+
 const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
     userInfo: JSON.parse(localStorage.getItem('userinfo') || '{}'),
-    token: Cookies.get('token') && (sessionStorage.getItem('token') || ''),
+    token: Cookies.get('token'),
   },
 
   effects: {
@@ -51,12 +67,12 @@ const UserModel: UserModelType = {
           type: 'saveLoginInfo',
           payload: response.Data,
         });
-        Cookies.set('token', response.Data.Token);
+        const token = response.Data.Token
+        Cookies.set('token', token);
         Cookies.set('username', payload.username);
         if (payload.autoLogin) {
-          sessionStorage.setItem('token', response.Data.Token);
+          Cookies.set('token', token)
         }
-
         yield put({
           type: 'info',
           payload: {},
@@ -83,34 +99,16 @@ const UserModel: UserModelType = {
           type: 'saveUserInfo',
           payload: data,
         });
-
         localStorage.setItem('userinfo', JSON.stringify(data));
-
-        setAuthority(data.authType);
-
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params as { redirect: string };
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
-        }
-        router.replace(redirect || '/');
+        replaceGoto()
+        return data.authType
       }
+      return ''
     },
 
     *logout(_, { put }) {
       Cookies.remove('token');
       Cookies.remove('username');
-      sessionStorage.removeItem('token');
       localStorage.removeItem('userinfo');
       yield put({
         type: 'saveLoginInfo',

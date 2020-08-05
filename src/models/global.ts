@@ -1,6 +1,4 @@
-import { Subscription } from 'dva';
-import { Reducer } from 'redux';
-
+import { Subscription, Reducer   } from 'umi';
 
 export interface GlobalModelState {
   collapsed: boolean;

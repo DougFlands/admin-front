@@ -1,5 +1,5 @@
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React, { Component } from 'react';
+// import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import React, {  } from 'react';
 import { ConnectState } from '@/models/connect';
 
 import {
@@ -7,139 +7,94 @@ import {
   Input,
   Button,
 } from "antd";
-import { RegParamsType, } from '@/services/user';
-import { FormComponentProps } from 'antd/es/form';
-import { AnyAction, Dispatch } from 'redux';
-import { connect } from 'dva';
+import { Dispatch, connect } from 'umi';
 
 interface RegProps {
-  dispatch: Dispatch<AnyAction>;
+  dispatch: Dispatch;
   submitting?: boolean;
-  form: FormComponentProps['form'],
 }
 
-interface RegState {
-}
+const Registration: React.FC<RegProps> = (props) => {
+  const { submitting } = props
+  const [form] = Form.useForm();
 
-class RegistrationForm extends Component<RegProps, RegState> {
-  state: RegState = {
+  const layout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 10 },
   };
 
-  handleSubmit = async (err: unknown, values: RegParamsType) => {
-    if (!err) {
-      const { dispatch } = this.props;
+  const handleSubmit = async () => {
+    const { dispatch } = props;
+    try {
+      const values = await form.validateFields();
       await dispatch({
         type: 'user/signup',
         payload: {
           ...values,
         },
       })
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
     }
   }
 
-  compareToFirstPassword = (rule: any, value: string, callback: Function) => {
-    const { form } = this.props;
-    if (value && value !== form.getFieldValue("password")) {
-      callback("两次输入的密码不一致!");
-    } else {
-      callback();
-    }
-  };
+  return (
+    <Form {...layout} onFinish={handleSubmit} form={form}>
+      <Form.Item
+        name="username"
+        label="用户名"
+        rules={[{ required: true, message: '请输入用户名!' }]}
+      >
+        <Input placeholder="请输入用户名" />
+      </Form.Item>
 
-  render() {
-    const { submitting, form } = this.props
-    const { getFieldDecorator } = form
+      <Form.Item
+        name="password"
+        label="密码"
+        rules={[{ required: true, message: '请输入密码!' }]}
+        hasFeedback>
+        <Input type="password" placeholder="请输入密码" />
+      </Form.Item>
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 12 },
-        sm: { span: 4 }
-      },
-      wrapperCol: {
-        xs: { span: 12 },
-        sm: { span: 8 }
-      }
-    };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 12,
-          offset: 0
-        },
-        sm: {
-          span: 8,
-          offset: 4
-        }
-      }
-    };
-
-    return (
-      <Form {...formItemLayout}>
-        <Form.Item
-          label={
-            <span>
-              用户名
-            </span>
-          }
-        >
-          {getFieldDecorator("username", {
-            rules: [
-              {
-                required: true,
-                message: "请输入用户名!",
-                whitespace: true
+      <Form.Item
+        name="confirm"
+        label="确认密码"
+        rules={[
+          { required: true, message: '请输入密码!' },
+          ({ getFieldValue }) => ({
+            validator(rule, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve();
               }
-            ]
-          })(<Input />)}
-        </Form.Item>
-        <Form.Item label="密码" hasFeedback>
-          {getFieldDecorator("password", {
-            rules: [
-              {
-                required: true,
-                message: "请输入密码!"
-              },
-            ]
-          })(<Input.Password />)}
-        </Form.Item>
-        <Form.Item label="确认密码" hasFeedback>
-          {getFieldDecorator("confirm", {
-            rules: [
-              {
-                required: true,
-                message: "请再次输入密码!"
-              },
-              {
-                validator: this.compareToFirstPassword
-              }
-            ]
-          })(<Input.Password />)}
-        </Form.Item>
+              // eslint-disable-next-line prefer-promise-reject-errors
+              return Promise.reject('两次输入的密码不一致!');
+            },
+          })
+        ]}
+        hasFeedback>
+        <Input type="password" placeholder="请再次输入密码" />
+      </Form.Item>
 
-        <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit" loading={submitting} onClick={() => {
-            this.props.form.validateFields(this.handleSubmit)
-          }}>
-            提交注册
-          </Button>
-        </Form.Item>
-      </Form>
-    );
-  }
+      <Form.Item>
+        <Button type="primary" htmlType="submit" loading={submitting}>
+          提交注册
+        </Button>
+      </Form.Item>
+    </Form>
+  )
 }
+
+
+
 
 const WrappedRegistrationForm = connect(
   ({ loading }: ConnectState) => ({
     submitting: loading.effects['user/signup'],
   })
-)(
-  Form.create({ name: "register" })(
-    RegistrationForm
-  )
-)
+)(Registration)
 
 export default (): React.ReactNode => (
-  <PageHeaderWrapper>
-    <WrappedRegistrationForm />
-  </PageHeaderWrapper>
+  // <PageHeaderWrapper>
+  <WrappedRegistrationForm />
+  // </PageHeaderWrapper>
 )

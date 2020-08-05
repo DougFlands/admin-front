@@ -1,6 +1,4 @@
-import { Reducer } from 'redux';
-
-import { Effect } from 'dva';
+import { Reducer, Effect } from 'umi';
 import { 
   uploadFile as apiUploadFile, 
   fastUploadFile as apiFastUploadFile 
